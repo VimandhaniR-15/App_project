@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <meta name="description" content="Prototype ICU observation review dashboard using transparent demonstration rules.">
+  <title>PulsePredict | ICU Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="PulsePredict home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 17h6l3-8 5 15 3-7h7"/></svg></span>
+        <span><strong>PulsePredict</strong><small>CLINICAL REVIEW</small></span>
+      </a>
+      <div class="unit-label">WORKSPACE</div>
+      <nav aria-label="Main navigation">
+        <a class="nav-item active" href="#overview"><span class="nav-icon">▦</span> Overview <span class="nav-dot"></span></a>
+        <a class="nav-item" href="#patients"><span class="nav-icon">♧</span> Patient monitor <span class="nav-count" id="patient-count">0</span></a>
+        <a class="nav-item" href="#data"><span class="nav-icon">⇧</span> Import observations</a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-note"><span class="pulse-dot"></span><div><strong>Prototype mode</strong><small>Demo rules · not clinically validated</small></div></div>
+      <div class="sidebar-footer">PULSEPredict <span>v0.1</span><br><small>For clinician review only</small></div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark"><svg viewBox="0 0 32 32"><path d="M4 17h6l3-8 5 15 3-7h7"/></svg></span><strong>PulsePredict</strong></div>
+        <div class="breadcrumb">Clinical workspace <span>/</span> <strong>Overview</strong></div>
+        <div class="topbar-right"><span class="live-label"><i></i> DEMONSTRATION DATA</span><span class="avatar">IC</span></div>
+      </header>
+
+      <section class="page-wrap">
+        <div class="page-heading">
+          <div><p class="eyebrow">INTENSIVE CARE · UNIT 04</p><h1>Patient overview</h1><p class="subheading">A clear view of recent observations for clinician review.</p></div>
+          <button class="button button-quiet" id="refresh-button" type="button"><span class="refresh-icon">↻</span> Refresh</button>
+        </div>
+
+        <div class="safety-banner" role="note"><span class="safety-icon">ⓘ</span><div><strong>Clinical review prototype</strong><span>Transparent demo rules only. Not clinically validated; not a diagnostic or treatment tool. Always use professional judgment.</span></div><button class="banner-close" aria-label="Dismiss notice" type="button">×</button></div>
+
+        <div class="summary-grid" aria-label="Unit summary">
+          <article class="summary-card"><div class="summary-top"><span>Patients monitored</span><span class="summary-icon icon-blue">♧</span></div><strong id="summary-patients">—</strong><small>Unique patient IDs</small></article>
+          <article class="summary-card"><div class="summary-top"><span>Review flags</span><span class="summary-icon icon-amber">⚑</span></div><strong id="summary-flags">—</strong><small>Latest observation needs review</small></article>
+          <article class="summary-card"><div class="summary-top"><span>Latest update</span><span class="summary-icon icon-teal">◷</span></div><strong class="summary-time" id="summary-updated">—</strong><small>Most recent observation</small></article>
+        </div>
+
+        <section class="content-card patient-card" id="patients">
+          <div class="card-heading"><div><div class="title-with-icon"><span class="heading-icon">▦</span><h2>Patient monitor</h2></div><p>Latest available observation per patient · select a row to inspect trends</p></div><div class="table-tools"><label class="search-box"><span>⌕</span><input id="patient-search" type="search" placeholder="Search patient ID" aria-label="Search patient ID"></label><span class="updated-chip"><i></i> Current view</span></div></div>
+          <div class="table-wrap"><table><thead><tr><th>PATIENT ID</th><th>LATEST OBSERVATION</th><th>HEART RATE <small>bpm</small></th><th>RESP. RATE <small>/min</small></th><th>SpO₂ <small>%</small></th><th>REVIEW STATUS</th></tr></thead><tbody id="patient-table"><tr><td colspan="6" class="loading-cell">Loading observations…</td></tr></tbody></table></div>
+          <div class="table-foot"><span id="table-caption">Loading patient list</span><span>Values shown as recorded; blanks are not imputed.</span></div>
+        </section>
+
+        <div class="detail-grid">
+          <section class="content-card trend-card" id="trends">
+            <div class="card-heading trend-heading"><div><div class="title-with-icon"><span class="heading-icon trend-icon">⌁</span><h2>Observation trends</h2></div><p id="trend-caption">Select a patient to view their chronological observations.</p></div><label class="select-wrap"><span class="sr-only">Selected patient</span><select id="patient-select" aria-label="Select patient"><option value="">Select patient</option></select><span>⌄</span></label></div>
+            <div class="legend-row"><span><i class="legend-blue"></i> Heart rate <small>bpm</small></span><span><i class="legend-purple"></i> Respiratory rate <small>/min</small></span><span><i class="legend-teal"></i> SpO₂ <small>%</small></span></div>
+            <div id="trend-chart" class="trend-chart"><div class="chart-empty">Choose a patient to inspect their available observations.</div></div>
+            <div class="chart-foot"><span>Chronological · values plotted on separate scales</span><span id="trend-range">—</span></div>
+          </section>
+
+          <section class="content-card rules-card">
+            <div class="card-heading"><div><div class="title-with-icon"><span class="heading-icon rules-icon">✓</span><h2>Review rules</h2></div><p>Configurable demonstration thresholds</p></div><span class="demo-pill">DEMO</span></div>
+            <div class="rule-list" id="rule-list"><div class="rule-item"><span class="rule-marker marker-blue"></span><div><strong>Heart rate</strong><small>Review if &lt; 45 or &gt; 120 bpm</small></div></div><div class="rule-item"><span class="rule-marker marker-purple"></span><div><strong>Respiratory rate</strong><small>Review if &gt; 24 /min</small></div></div><div class="rule-item"><span class="rule-marker marker-teal"></span><div><strong>Oxygen saturation</strong><small>Review if &lt; 92%</small></div></div><div class="rule-item"><span class="rule-marker marker-amber"></span><div><strong>Heart-rate change</strong><small>Review if change ≥ 25 bpm within 6 hours</small></div></div></div>
+            <div class="rule-disclaimer"><span>ⓘ</span> These simple rules are illustrative only and have not been clinically validated.</div>
+          </section>
+        </div>
+
+        <section class="content-card upload-card" id="data">
+          <div class="card-heading"><div><div class="title-with-icon"><span class="heading-icon upload-icon">⇧</span><h2>Import observations</h2></div><p>Upload a CSV to inspect and review a synthetic or appropriately de-identified dataset.</p></div><span class="format-tag">CSV · MAX 10 MB</span></div>
+          <form id="upload-form" class="upload-form"><label class="file-drop" for="csv-file"><span class="upload-symbol">⇧</span><span><strong>Choose a CSV file</strong><small>Required: patient_id, heart_rate · Optional: timestamp, respiratory_rate, spo2</small></span><input id="csv-file" type="file" name="file" accept=".csv,text/csv" required></label><button class="button button-primary" id="upload-button" type="submit">Upload and inspect <span>→</span></button></form>
+          <div id="upload-result" class="upload-result" aria-live="polite"></div>
+        </section>
+        <footer class="page-footer"><span>PulsePredict <b>·</b> ICU Early-Warning Review Prototype</span><span>Synthetic data by default <b>·</b> No data is saved after server restart</span></footer>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
